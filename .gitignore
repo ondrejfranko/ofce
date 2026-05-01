@@ -1,0 +1,12 @@
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.o
+
+# Compiled Executables and Build Artifacts
+/ofce*
+/build/
+
+# VSCode files
+.vscode/
