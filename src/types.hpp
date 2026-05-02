@@ -1,0 +1,65 @@
+#pragma once
+
+#include <cstdint>
+
+using Bitboard = uint64_t;
+using Key = uint64_t;
+
+inline constexpr int MAX_POS_MOVES = 256;
+inline constexpr int MAX_PLY_DEPTH = 256;
+
+// clang-format off
+enum Square : int8_t {
+    A1, B1, C1, D1, E1, F1, G1, H1,
+    A2, B2, C2, D2, E2, F2, G2, H2,
+    A3, B3, C3, D3, E3, F3, G3, H3,
+    A4, B4, C4, D4, E4, F4, G4, H4,
+    A5, B5, C5, D5, E5, F5, G5, H5,
+    A6, B6, C6, D6, E6, F6, G6, H6,
+    A7, B7, C7, D7, E7, F7, G7, H7,
+    A8, B8, C8, D8, E8, F8, G8, H8,
+    SQUARE_COUNT = 64,
+    SQUARE_NONE = -1
+};
+
+enum File : int8_t {
+    FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H,
+    FILE_COUNT = 8
+};
+
+enum Rank : int8_t {
+    RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8,
+    RANK_COUNT = 8
+};
+
+enum Color : int8_t {
+    WHITE, BLACK,
+    COLOR_COUNT = 2
+};
+
+enum PieceType : int8_t {
+    PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING,
+    PIECE_TYPE_COUNT = 6,
+    PIECE_TYPE_NONE = -1
+};
+
+enum Piece : int8_t {
+    WHITE_PAWN, WHITE_KNIGHT, WHITE_BISHOP, WHITE_ROOK, WHITE_QUEEN, WHITE_KING,
+    BLACK_PAWN, BLACK_KNIGHT, BLACK_BISHOP, BLACK_ROOK, BLACK_QUEEN, BLACK_KING,
+    PIECE_COUNT = 12,
+    PIECE_NONE = -1
+};
+// clang-format on
+
+enum CastlingRights : int8_t {
+    CR_NONE = 0,
+    CR_WHITE_KINGSIDE = 1 << 0,
+    CR_WHITE_QUEENSIDE = 1 << 1,
+    CR_BLACK_KINGSIDE = 1 << 2,
+    CR_BLACK_QUEENSIDE = 1 << 3,
+    CR_KINGSIDE = CR_WHITE_KINGSIDE | CR_BLACK_KINGSIDE,
+    CR_QUEENSIDE = CR_WHITE_QUEENSIDE | CR_BLACK_QUEENSIDE,
+    CR_WHITE = CR_WHITE_KINGSIDE | CR_WHITE_QUEENSIDE,
+    CR_BLACK = CR_BLACK_KINGSIDE | CR_BLACK_QUEENSIDE,
+    CR_ALL = CR_WHITE | CR_BLACK
+};
