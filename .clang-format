@@ -1,5 +1,6 @@
 ---
 BasedOnStyle: LLVM
+AllowShortFunctionsOnASingleLine: Empty
 ColumnLimit: 120
 IndentCaseLabels: true
 IndentWidth: 4
