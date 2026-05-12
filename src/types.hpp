@@ -18,8 +18,8 @@ enum Square : int8_t {
     A6, B6, C6, D6, E6, F6, G6, H6,
     A7, B7, C7, D7, E7, F7, G7, H7,
     A8, B8, C8, D8, E8, F8, G8, H8,
-    SQUARE_COUNT = 64,
-    SQUARE_NONE = -1
+    SQUARE_NONE,
+    SQUARE_COUNT = 64
 };
 
 enum File : int8_t {
@@ -38,16 +38,16 @@ enum Color : int8_t {
 };
 
 enum PieceType : int8_t {
+    PIECE_TYPE_NONE,
     PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING,
-    PIECE_TYPE_COUNT = 6,
-    PIECE_TYPE_NONE = -1
+    PIECE_TYPE_COUNT = 7
 };
 
 enum Piece : int8_t {
+    PIECE_NONE,
     WHITE_PAWN, WHITE_KNIGHT, WHITE_BISHOP, WHITE_ROOK, WHITE_QUEEN, WHITE_KING,
     BLACK_PAWN, BLACK_KNIGHT, BLACK_BISHOP, BLACK_ROOK, BLACK_QUEEN, BLACK_KING,
-    PIECE_COUNT = 12,
-    PIECE_NONE = -1
+    PIECE_COUNT = 13
 };
 // clang-format on
 
