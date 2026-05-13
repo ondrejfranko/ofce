@@ -1,7 +1,7 @@
 #pragma once
 
 #include "types.hpp"
-// #include <string_view>
+#include <string_view>
 
 struct alignas(64) Position {
     Piece squares[SQUARE_COUNT];
@@ -18,5 +18,26 @@ struct alignas(64) Position {
 
     // TODO: auxiliary bitboards
 };
+
+constexpr Piece char_to_piece(char c) {
+    switch (c) {
+        case 'P': return WHITE_PAWN;
+        case 'N': return WHITE_KNIGHT;
+        case 'B': return WHITE_BISHOP;
+        case 'R': return WHITE_ROOK;
+        case 'Q': return WHITE_QUEEN;
+        case 'K': return WHITE_KING;
+        case 'p': return BLACK_PAWN;
+        case 'n': return BLACK_KNIGHT;
+        case 'b': return BLACK_BISHOP;
+        case 'r': return BLACK_ROOK;
+        case 'q': return BLACK_QUEEN;
+        case 'k': return BLACK_KING;
+        default: return PIECE_NONE;
+    }
+}
+
+void clear_square(Position &pos, Square square);
+void set_square(Position &pos, Square square, Piece piece);
 
 void print_position(const Position &pos);

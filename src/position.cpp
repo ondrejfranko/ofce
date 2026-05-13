@@ -1,6 +1,15 @@
 #include "position.hpp"
 #include "types.hpp"
 #include <print>
+#include <string_view>
+
+void clear_square(Position &pos, Square square) {
+    pos.squares[square] = PIECE_NONE;
+}
+
+void set_square(Position &pos, Square square, Piece piece) {
+    pos.squares[square] = piece;
+}
 
 void print_position(const Position &pos) {
     const char *ascii_pieces = " PNBRQKpnbrqk";
