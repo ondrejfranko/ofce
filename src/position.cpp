@@ -1,5 +1,6 @@
 #include "position.hpp"
 #include "types.hpp"
+#include <charconv>
 #include <print>
 #include <string_view>
 
@@ -9,6 +10,99 @@ void clear_square(Position &pos, Square square) {
 
 void set_square(Position &pos, Square square, Piece piece) {
     pos.squares[square] = piece;
+}
+
+void clear_position(Position &pos) {
+    pos = Position{};
+}
+
+void set_position(Position &pos, std::string_view fen) {
+    clear_position(pos);
+
+    int sq = A8;
+    int i = 0;
+
+    // 1. Parse piece placement
+    for (; i < fen.length() && fen[i] != ' '; ++i) {
+        char c = fen[i];
+        if (c == '/') {
+            sq -= 16;
+        } else if (std::isdigit(c)) {
+            sq += (c - '0');
+        } else {
+            set_square(pos, static_cast<Square>(sq++), char_to_piece(c));
+        }
+    }
+
+    // Skip whitespace
+    while (i < fen.length() && fen[i] == ' ') {
+        ++i;
+    }
+
+    // 2. Parse side to move
+    if (i < fen.length()) {
+        pos.side_to_move = (fen[i] == 'w') ? WHITE : BLACK;
+        ++i;
+    }
+
+    // Skip whitespace
+    while (i < fen.length() && fen[i] == ' ') {
+        ++i;
+    }
+
+    // 3. Parse castling rights
+    pos.castling_rights = CR_NONE;
+    for (; i < fen.length() && fen[i] != ' '; ++i) {
+        char c = fen[i];
+        switch (c) {
+            case 'K': pos.castling_rights |= CR_WHITE_KINGSIDE; break;
+            case 'Q': pos.castling_rights |= CR_WHITE_QUEENSIDE; break;
+            case 'k': pos.castling_rights |= CR_BLACK_KINGSIDE; break;
+            case 'q': pos.castling_rights |= CR_BLACK_QUEENSIDE; break;
+        }
+    }
+
+    // Skip whitespace
+    while (i < fen.length() && fen[i] == ' ') {
+        ++i;
+    }
+
+    // 4. Parse en passant square
+    if (i + 1 < fen.length() && fen[i] != '-') {
+        char file = fen[i];
+        char rank = fen[i + 1];
+        if (file >= 'a' && file <= 'h' && rank >= '1' && rank <= '8') {
+            pos.en_passant_square = static_cast<Square>((rank - '1') * 8 + (file - 'a'));
+        }
+        i += 2;
+    } else {
+        pos.en_passant_square = SQUARE_NONE;
+        i += 1;
+    }
+
+    // Skip whitespace
+    while (i < fen.length() && fen[i] == ' ') {
+        ++i;
+    }
+
+    // 5. Parse halfmove clock
+    pos.fifty_move_rule_ply = 0;
+    if (i < fen.length()) {
+        auto [ptr, ec] = std::from_chars(fen.data() + i, fen.data() + fen.length(), pos.fifty_move_rule_ply);
+        i = ptr - fen.data();
+    }
+
+    // Skip whitespace
+    while (i < fen.length() && fen[i] == ' ') {
+        ++i;
+    }
+
+    // 6. Parse fullmove number
+    pos.game_ply = 0;
+    if (i < fen.length()) {
+        auto [ptr, ec] = std::from_chars(fen.data() + i, fen.data() + fen.length(), pos.game_ply);
+        pos.game_ply = (pos.game_ply - 1) * 2 + (pos.side_to_move == BLACK ? 1 : 0);
+    }
 }
 
 void print_position(const Position &pos) {

@@ -9,7 +9,7 @@ struct alignas(64) Position {
     Bitboard color_BB[COLOR_COUNT];
 
     Color side_to_move;
-    CastlingRights castling_rights;
+    int8_t castling_rights;
     Square en_passant_square;
     int fifty_move_rule_ply;
     int game_ply;
@@ -40,4 +40,6 @@ constexpr Piece char_to_piece(char c) {
 void clear_square(Position &pos, Square square);
 void set_square(Position &pos, Square square, Piece piece);
 
+void clear_position(Position &pos);
+void set_position(Position &pos, std::string_view fen);
 void print_position(const Position &pos);
