@@ -37,6 +37,14 @@ constexpr Piece char_to_piece(char c) {
     }
 }
 
+constexpr Color piece_color(Piece p) {
+    if (p <= WHITE_KING) {
+        return WHITE;
+    } else {
+        return BLACK;
+    }
+}
+
 void clear_square(Position &pos, Square square);
 void set_square(Position &pos, Square square, Piece piece);
 

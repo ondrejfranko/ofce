@@ -1,15 +1,37 @@
 #include "position.hpp"
+#include "bitboard.hpp"
 #include "types.hpp"
 #include <charconv>
 #include <print>
 #include <string_view>
 
 void clear_square(Position &pos, Square square) {
+    Piece p = pos.squares[square];
+
+    // Clear bitboards
+    if (p != PIECE_NONE) {
+        clear_bit(pos.piece_BB[p], square);
+        clear_bit(pos.color_BB[piece_color(p)], square);
+    }
+
+    // Clear mailbox square
     pos.squares[square] = PIECE_NONE;
 }
 
 void set_square(Position &pos, Square square, Piece piece) {
+    // Clear mailbox square
+    if (pos.squares[square] != PIECE_NONE) {
+        clear_square(pos, square);
+    }
+
+    // Set mailbox square
     pos.squares[square] = piece;
+
+    // Set bitboards
+    if (piece != PIECE_NONE) {
+        set_bit(pos.piece_BB[piece], square);
+        set_bit(pos.color_BB[piece_color(piece)], square);
+    }
 }
 
 void clear_position(Position &pos) {
