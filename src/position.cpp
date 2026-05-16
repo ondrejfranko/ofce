@@ -1,6 +1,7 @@
 #include "position.hpp"
 #include "bitboard.hpp"
 #include "types.hpp"
+#include "zobrist.hpp"
 #include <charconv>
 #include <print>
 #include <string_view>
@@ -16,6 +17,11 @@ void clear_square(Position &pos, Square square) {
 
     // Clear mailbox square
     pos.squares[square] = PIECE_NONE;
+
+    // Update zobrist key
+    if (p != PIECE_NONE) {
+        pos.zobrist_key ^= ZOBRIST_PSQ[p][square];
+    }
 }
 
 void set_square(Position &pos, Square square, Piece piece) {
@@ -32,6 +38,9 @@ void set_square(Position &pos, Square square, Piece piece) {
         set_bit(pos.piece_BB[piece], square);
         set_bit(pos.color_BB[piece_color(piece)], square);
     }
+
+    // Update zobrist key
+    pos.zobrist_key ^= ZOBRIST_PSQ[piece][square];
 }
 
 void clear_position(Position &pos) {
@@ -65,6 +74,11 @@ void set_position(Position &pos, std::string_view fen) {
     if (i < fen.length()) {
         pos.side_to_move = (fen[i] == 'w') ? WHITE : BLACK;
         ++i;
+
+        // Update side to move zobrist key
+        if (pos.side_to_move == BLACK) {
+            pos.zobrist_key ^= ZOBRIST_SIDE_TO_MOVE;
+        }
     }
 
     // Skip whitespace
@@ -84,6 +98,9 @@ void set_position(Position &pos, std::string_view fen) {
         }
     }
 
+    // Update castling rights zobrist key
+    pos.zobrist_key ^= ZOBRIST_CASTLING[pos.castling_rights];
+
     // Skip whitespace
     while (i < fen.length() && fen[i] == ' ') {
         ++i;
@@ -95,6 +112,9 @@ void set_position(Position &pos, std::string_view fen) {
         char rank = fen[i + 1];
         if (file >= 'a' && file <= 'h' && rank >= '1' && rank <= '8') {
             pos.en_passant_square = static_cast<Square>((rank - '1') * 8 + (file - 'a'));
+
+            // Update en passant zobrist key
+            pos.zobrist_key ^= ZOBRIST_EP[file - 'a'];
         }
         i += 2;
     } else {
