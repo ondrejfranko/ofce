@@ -3,8 +3,74 @@
 #include "types.hpp"
 #include "zobrist.hpp"
 #include <charconv>
+#include <format>
 #include <print>
 #include <string_view>
+
+std::string get_fen(const Position &pos) {
+    std::string fen;
+    fen.reserve(90);
+
+    constexpr std::string_view ascii_pieces = " PNBRQKpnbrqk";
+
+    // 1. Piece placement
+    for (int rank = RANK_8; rank >= RANK_1; --rank) {
+        int empty_count = 0;
+
+        for (int file = FILE_A; file <= FILE_H; ++file) {
+            Square sq = static_cast<Square>(rank * 8 + file);
+            Piece p = pos.squares[sq];
+
+            if (p == PIECE_NONE) {
+                empty_count++;
+            } else {
+                if (empty_count > 0) {
+                    fen += static_cast<char>('0' + empty_count);
+                    empty_count = 0;
+                }
+                fen += ascii_pieces[p];
+            }
+        }
+        if (empty_count > 0) {
+            fen += static_cast<char>('0' + empty_count);
+        }
+        if (rank > RANK_1) {
+            fen += '/';
+        }
+    }
+
+    // 2. Side to move
+    fen += (pos.side_to_move == WHITE) ? " w " : " b ";
+
+    // 3. Castling rights
+    if (pos.castling_rights == CR_NONE) {
+        fen += "-";
+    } else {
+        if (pos.castling_rights & CR_WHITE_KINGSIDE)
+            fen += 'K';
+        if (pos.castling_rights & CR_WHITE_QUEENSIDE)
+            fen += 'Q';
+        if (pos.castling_rights & CR_BLACK_KINGSIDE)
+            fen += 'k';
+        if (pos.castling_rights & CR_BLACK_QUEENSIDE)
+            fen += 'q';
+    }
+    fen += ' ';
+
+    // 4. En passant square
+    if (pos.en_passant_square != SQUARE_NONE) {
+        fen += ('a' + (pos.en_passant_square % 8));
+        fen += ('1' + (pos.en_passant_square / 8));
+    } else {
+        fen += "-";
+    }
+    fen += ' ';
+
+    // 5. and 6. Halfmove clock and Fullmove number
+    fen += std::format("{} {}", pos.fifty_move_rule_ply, pos.game_ply / 2 + 1);
+
+    return fen;
+}
 
 void clear_square(Position &pos, Square square) {
     Piece p = pos.squares[square];
@@ -148,8 +214,10 @@ void set_position(Position &pos, std::string_view fen) {
 }
 
 void print_position(const Position &pos) {
-    const char *ascii_pieces = " PNBRQKpnbrqk";
+    constexpr std::string_view ascii_pieces = " PNBRQKpnbrqk";
+    std::string fen = get_fen(pos);
 
+    // Print board
     for (int rank = RANK_8; rank >= RANK_1; --rank) {
         std::println("  +---+---+---+---+---+---+---+---+");
         std::print("{} |", rank + 1);
@@ -160,4 +228,14 @@ void print_position(const Position &pos) {
         std::println();
     }
     std::println("  +---+---+---+---+---+---+---+---+");
+    std::println("    a   b   c   d   e   f   g   h\n");
+
+    // Print FEN
+    std::println("FEN: {}", fen);
+
+    // Print Zobrist key
+    std::println("Zobrist Key: {:#018x}", pos.zobrist_key);
+
+    // Flush stdout
+    std::fflush(stdout);
 }

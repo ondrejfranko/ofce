@@ -1,6 +1,7 @@
 #pragma once
 
 #include "types.hpp"
+#include <string>
 #include <string_view>
 
 struct alignas(64) Position {
@@ -44,6 +45,8 @@ constexpr Color piece_color(Piece p) {
         return BLACK;
     }
 }
+
+std::string get_fen(const Position &pos);
 
 void clear_square(Position &pos, Square square);
 void set_square(Position &pos, Square square, Piece piece);
