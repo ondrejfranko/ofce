@@ -206,10 +206,10 @@ void set_position(Position &pos, std::string_view fen) {
     }
 
     // 6. Parse fullmove number
-    pos.game_ply = 0;
+    int fullmove = 1;
     if (i < fen.length()) {
-        auto [ptr, ec] = std::from_chars(fen.data() + i, fen.data() + fen.length(), pos.game_ply);
-        pos.game_ply = (pos.game_ply - 1) * 2 + (pos.side_to_move == BLACK ? 1 : 0);
+        std::from_chars(fen.data() + i, fen.data() + fen.length(), fullmove);
+        pos.game_ply = (fullmove - 1) * 2 + (pos.side_to_move == BLACK ? 1 : 0);
     }
 }
 
