@@ -2,6 +2,7 @@
 #include "bitboard.hpp"
 #include "types.hpp"
 #include "zobrist.hpp"
+#include <cctype>
 #include <charconv>
 #include <format>
 #include <print>
@@ -117,7 +118,7 @@ void set_position(Position &pos, std::string_view fen) {
     clear_position(pos);
 
     int sq = A8;
-    int i = 0;
+    size_t i = 0;
 
     // 1. Parse piece placement
     for (; i < fen.length() && fen[i] != ' '; ++i) {
@@ -196,7 +197,7 @@ void set_position(Position &pos, std::string_view fen) {
     // 5. Parse halfmove clock
     pos.fifty_move_rule_ply = 0;
     if (i < fen.length()) {
-        auto [ptr, ec] = std::from_chars(fen.data() + i, fen.data() + fen.length(), pos.fifty_move_rule_ply);
+        auto [ptr, _] = std::from_chars(fen.data() + i, fen.data() + fen.length(), pos.fifty_move_rule_ply);
         i = ptr - fen.data();
     }
 
