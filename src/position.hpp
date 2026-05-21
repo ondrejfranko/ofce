@@ -1,6 +1,7 @@
 #pragma once
 
 #include "types.hpp"
+#include <cassert>
 #include <string>
 #include <string_view>
 
@@ -39,11 +40,9 @@ constexpr Piece char_to_piece(char c) {
 }
 
 constexpr Color piece_color(Piece p) {
-    if (p <= WHITE_KING) {
-        return WHITE;
-    } else {
-        return BLACK;
-    }
+    assert(p != PIECE_NONE);
+
+    return (p <= WHITE_KING) ? WHITE : BLACK;
 }
 
 std::string get_fen(const Position &pos);

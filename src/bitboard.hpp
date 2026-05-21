@@ -3,6 +3,7 @@
 #include "types.hpp"
 #include <array>
 #include <bit>
+#include <cassert>
 
 inline constexpr std::array<Bitboard, FILE_COUNT> FILE_BB = []() {
     std::array<Bitboard, FILE_COUNT> arr{};
@@ -25,14 +26,22 @@ constexpr Bitboard bit(Square sq) {
 }
 
 constexpr void clear_bit(Bitboard &bb, Square sq) {
+    assert(A1 <= sq && sq < SQUARE_COUNT);
+    assert((bb >> sq) & 1ULL);
+
     bb &= ~(1ULL << sq);
 }
 
 constexpr void set_bit(Bitboard &bb, Square sq) {
+    assert(A1 <= sq && sq < SQUARE_COUNT);
+    assert(((bb >> sq) & 1ULL) == 0);
+
     bb |= (1ULL << sq);
 }
 
 constexpr bool test_bit(Bitboard bb, Square sq) {
+    assert(A1 <= sq && sq < SQUARE_COUNT);
+
     return (bb >> sq) & 1ULL;
 }
 
@@ -41,20 +50,28 @@ constexpr int popcount(Bitboard bb) {
 }
 
 constexpr Square get_lsb(Bitboard bb) {
+    assert(bb != 0);
+
     return static_cast<Square>(std::countr_zero(bb));
 }
 
 constexpr Square get_msb(Bitboard bb) {
+    assert(bb != 0);
+
     return static_cast<Square>(63 - std::countl_zero(bb));
 }
 
 constexpr Square pop_lsb(Bitboard &bb) {
+    assert(bb != 0);
+
     Square sq = get_lsb(bb);
     bb &= bb - 1;
     return sq;
 }
 
 constexpr Square pop_msb(Bitboard &bb) {
+    assert(bb != 0);
+
     Square sq = get_msb(bb);
     clear_bit(bb, sq);
     return sq;

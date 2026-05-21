@@ -2,6 +2,7 @@
 #include "bitboard.hpp"
 #include "types.hpp"
 #include "zobrist.hpp"
+#include <cassert>
 #include <cctype>
 #include <charconv>
 #include <format>
@@ -74,6 +75,8 @@ std::string get_fen(const Position &pos) {
 }
 
 void clear_square(Position &pos, Square square) {
+    assert(A1 <= square && square < SQUARE_COUNT);
+
     Piece p = pos.squares[square];
 
     // Clear bitboards
@@ -92,6 +95,9 @@ void clear_square(Position &pos, Square square) {
 }
 
 void set_square(Position &pos, Square square, Piece piece) {
+    assert(A1 <= square && square < SQUARE_COUNT);
+    assert(WHITE_PAWN <= piece && piece < PIECE_COUNT);
+
     // Clear mailbox square
     if (pos.squares[square] != PIECE_NONE) {
         clear_square(pos, square);
@@ -128,6 +134,8 @@ void set_position(Position &pos, std::string_view fen) {
         } else if (std::isdigit(c)) {
             sq += (c - '0');
         } else {
+            assert(A1 <= sq && sq < SQUARE_COUNT);
+
             set_square(pos, static_cast<Square>(sq++), char_to_piece(c));
         }
     }
