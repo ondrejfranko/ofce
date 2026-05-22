@@ -77,36 +77,36 @@ constexpr Square pop_msb(Bitboard &bb) {
     return sq;
 }
 
-constexpr void shift_N(Bitboard &bb) {
-    bb <<= 8;
+constexpr Bitboard shift_N(Bitboard bb) {
+    return bb << 8;
 }
 
-constexpr void shift_S(Bitboard &bb) {
-    bb >>= 8;
+constexpr Bitboard shift_S(Bitboard bb) {
+    return bb >> 8;
 }
 
-constexpr void shift_W(Bitboard &bb) {
-    bb = (bb >> 1) & ~FILE_BB[FILE_H];
+constexpr Bitboard shift_W(Bitboard bb) {
+    return (bb >> 1) & ~FILE_BB[FILE_H];
 }
 
-constexpr void shift_E(Bitboard &bb) {
-    bb = (bb << 1) & ~FILE_BB[FILE_A];
+constexpr Bitboard shift_E(Bitboard bb) {
+    return (bb << 1) & ~FILE_BB[FILE_A];
 }
 
-constexpr void shift_NW(Bitboard &bb) {
-    bb = (bb << 7) & ~FILE_BB[FILE_H];
+constexpr Bitboard shift_NW(Bitboard bb) {
+    return (bb << 7) & ~FILE_BB[FILE_H];
 }
 
-constexpr void shift_NE(Bitboard &bb) {
-    bb = (bb << 9) & ~FILE_BB[FILE_A];
+constexpr Bitboard shift_NE(Bitboard bb) {
+    return (bb << 9) & ~FILE_BB[FILE_A];
 }
 
-constexpr void shift_SW(Bitboard &bb) {
-    bb = (bb >> 9) & ~FILE_BB[FILE_H];
+constexpr Bitboard shift_SW(Bitboard bb) {
+    return (bb >> 9) & ~FILE_BB[FILE_H];
 }
 
-constexpr void shift_SE(Bitboard &bb) {
-    bb = (bb >> 7) & ~FILE_BB[FILE_A];
+constexpr Bitboard shift_SE(Bitboard bb) {
+    return (bb >> 7) & ~FILE_BB[FILE_A];
 }
 
 void print_bitboard(Bitboard bb);
