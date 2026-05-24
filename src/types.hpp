@@ -63,3 +63,14 @@ enum CastlingRights : int8_t {
     CR_BLACK = CR_BLACK_KINGSIDE | CR_BLACK_QUEENSIDE,
     CR_ALL = CR_WHITE | CR_BLACK
 };
+
+enum Direction : int8_t {
+    NORTH = 8,
+    SOUTH = -8,
+    WEST = -1,
+    EAST = 1,
+    NORTH_WEST = 7,
+    NORTH_EAST = 9,
+    SOUTH_WEST = -9,
+    SOUTH_EAST = -7
+};
