@@ -29,7 +29,7 @@ all: $(TARGET)
 
 # Link the target executable
 $(TARGET): $(OBJS)
-	$(CXX) $(LDFLAGS) $^ -o $@
+	$(CXX) $^ -o $@ $(LDFLAGS)
 
 # Create the build directory if it doesn't exist
 $(BUILD_DIR):
