@@ -1,7 +1,9 @@
 ---
 BasedOnStyle: LLVM
+AllowShortCaseLabelsOnASingleLine: true
+AllowShortEnumsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: Empty
-ColumnLimit: 120
+ColumnLimit: 150
 IndentCaseLabels: true
 IndentWidth: 4
 TabWidth: 4
