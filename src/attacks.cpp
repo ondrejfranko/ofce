@@ -75,3 +75,71 @@ Bitboard get_rook_mask(Square sq) {
     }
     return mask;
 }
+
+void init_attacks() {
+    // Pawn attacks
+    for (int sq = A1; sq < SQUARE_COUNT; ++sq) {
+        int file = sq % 8;
+        int rank = sq / 8;
+        Bitboard white_pawn_attacks = 0;
+        Bitboard black_pawn_attacks = 0;
+
+        for (int file_offset : {-1, 1}) {
+            int f = file + file_offset;
+
+            if (FILE_A <= f && f < FILE_COUNT) {
+                if (RANK_1 <= rank + 1 && rank + 1 < RANK_COUNT) {
+                    white_pawn_attacks |= bit(static_cast<Square>((rank + 1) * 8 + f));
+                }
+                if (RANK_1 <= rank - 1 && rank - 1 < RANK_COUNT) {
+                    black_pawn_attacks |= bit(static_cast<Square>((rank - 1) * 8 + f));
+                }
+            }
+        }
+
+        PAWN_ATTACKS_BB[WHITE][sq] = white_pawn_attacks;
+        PAWN_ATTACKS_BB[BLACK][sq] = black_pawn_attacks;
+    }
+
+    // Knight attacks
+    for (int sq = A1; sq < SQUARE_COUNT; ++sq) {
+        int file = sq % 8;
+        int rank = sq / 8;
+        Bitboard knight_attacks = 0;
+
+        for (auto [file_offset, rank_offset] : {std::pair{2, 1}, {1, 2}, {2, -1}, {-1, 2}, {-2, 1}, {1, -2}, {-2, -1}, {-1, -2}}) {
+            int f = file + file_offset;
+            int r = rank + rank_offset;
+
+            if (FILE_A <= f && f < FILE_COUNT && RANK_1 <= r && r < RANK_COUNT) {
+                knight_attacks |= bit(static_cast<Square>(r * 8 + f));
+            }
+        }
+
+        KNIGHT_ATTACKS_BB[sq] = knight_attacks;
+    }
+
+    // King attacks
+    for (int sq = A1; sq < SQUARE_COUNT; ++sq) {
+        int file = sq % 8;
+        int rank = sq / 8;
+        Bitboard king_attacks = 0;
+
+        for (int file_offset = -1; file_offset <= 1; ++file_offset) {
+            for (int rank_offset = -1; rank_offset <= 1; ++rank_offset) {
+                if (file_offset == 0 && rank_offset == 0) {
+                    continue;
+                }
+
+                int f = file + file_offset;
+                int r = rank + rank_offset;
+
+                if (FILE_A <= f && f < FILE_COUNT && RANK_1 <= r && r < RANK_COUNT) {
+                    king_attacks |= bit(static_cast<Square>(r * 8 + f));
+                }
+            }
+        }
+
+        KING_ATTACKS_BB[sq] = king_attacks;
+    }
+}
