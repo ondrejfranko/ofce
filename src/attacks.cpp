@@ -4,6 +4,7 @@
 #include <array>
 #include <bit>
 #include <cassert>
+#include <immintrin.h>
 
 // Relevant potential blocker occupancy bitboards for sliding pieces
 Bitboard BISHOP_MASKS_BB[SQUARE_COUNT];
@@ -120,6 +121,34 @@ static Bitboard compute_rook_attacks(Square sq, Bitboard occupancy) {
         }
     }
     return attacks;
+}
+
+static void build_bishop_attacks(Square sq) {
+    Bitboard mask = BISHOP_MASKS_BB[sq];
+    int relevant_bits = std::popcount(mask);
+    int occupancy_variations = 1 << relevant_bits;
+
+    // Generate attacks for all possible blocker configurations
+    for (int i = 0; i < occupancy_variations; ++i) {
+        // Use PDEP to create the occupancy bitboard for the current variation
+        Bitboard occupancy = _pdep_u64(static_cast<uint64_t>(i), mask);
+        // Use PEXT to get the index for the attack table
+        BISHOP_ATTACKS_BB[sq][_pext_u64(occupancy, mask)] = compute_bishop_attacks(sq, occupancy);
+    }
+}
+
+static void build_rook_attacks(Square sq) {
+    Bitboard mask = ROOK_MASKS_BB[sq];
+    int relevant_bits = std::popcount(mask);
+    int occupancy_variations = 1 << relevant_bits;
+
+    // Generate attacks for all possible blocker configurations
+    for (int i = 0; i < occupancy_variations; ++i) {
+        // Use PDEP to create the occupancy bitboard for the current variation
+        Bitboard occupancy = _pdep_u64(static_cast<uint64_t>(i), mask);
+        // Use PEXT to get the index for the attack table
+        ROOK_ATTACKS_BB[sq][_pext_u64(occupancy, mask)] = compute_rook_attacks(sq, occupancy);
+    }
 }
 
 void init_attacks() {
