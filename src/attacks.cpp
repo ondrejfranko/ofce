@@ -232,4 +232,42 @@ void init_attacks() {
         // Build rook attacks for all occupancy variations
         build_rook_attacks(static_cast<Square>(sq));
     }
+
+    // Between and line bitboards
+    for (int sq1 = A1; sq1 < SQUARE_COUNT; ++sq1) {
+        for (int sq2 = A1; sq2 < SQUARE_COUNT; ++sq2) {
+            BETWEEN_BB[sq1][sq2] = 0;
+            LINE_BB[sq1][sq2] = 0;
+        }
+    }
+
+    for (int sq1 = A1; sq1 < SQUARE_COUNT; ++sq1) {
+        for (int sq2 = A1; sq2 < SQUARE_COUNT; ++sq2) {
+            if (sq1 == sq2) {
+                continue;
+            }
+
+            int file1 = sq1 % 8;
+            int rank1 = sq1 / 8;
+            int file2 = sq2 % 8;
+            int rank2 = sq2 / 8;
+
+            // Check if the squares are on the same file, rank, or diagonal
+            if (file1 == file2 || rank1 == rank2 || std::abs(file1 - file2) == std::abs(rank1 - rank2)) {
+                int file_step = (file2 > file1) ? 1 : (file2 < file1) ? -1 : 0;
+                int rank_step = (rank2 > rank1) ? 1 : (rank2 < rank1) ? -1 : 0;
+
+                int f = file1 + file_step;
+                int r = rank1 + rank_step;
+
+                while (f != file2 || r != rank2) {
+                    BETWEEN_BB[sq1][sq2] |= bit(static_cast<Square>(r * 8 + f));
+                    LINE_BB[sq1][sq2] |= bit(static_cast<Square>(r * 8 + f));
+                    f += file_step;
+                    r += rank_step;
+                }
+                LINE_BB[sq1][sq2] |= bit(static_cast<Square>(rank2 * 8 + file2));
+            }
+        }
+    }
 }
