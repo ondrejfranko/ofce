@@ -3,7 +3,7 @@ CXX := g++
 TARGET := ofce
 
 # Base compiler, preprocessor, and linker flags
-CXXFLAGS := -std=c++23 -Wall -Wextra -Wshadow -pedantic -pthread
+CXXFLAGS := -std=c++23 -Wall -Wextra -Wshadow -pedantic -pthread -mbmi2
 CPPFLAGS := -MMD -MP
 LDFLAGS := -pthread
 
