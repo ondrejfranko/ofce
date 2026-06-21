@@ -56,6 +56,9 @@ class Move {
     constexpr bool is_castling() const {
         return move_type() == CASTLING_MOVE;
     }
+    constexpr bool is_null() const {
+        return data == 0;
+    }
 
     // Operators
     constexpr bool operator==(const Move &other) const {
@@ -71,3 +74,5 @@ class Move {
   private:
     uint16_t data;
 };
+
+inline constexpr Move MOVE_NULL = Move();
