@@ -76,3 +76,30 @@ class Move {
 };
 
 inline constexpr Move MOVE_NULL = Move();
+
+struct MoveList {
+    Move moves[MAX_POS_MOVES];
+    int count = 0;
+
+    void add_move(const Move &move) {
+        if (count < MAX_POS_MOVES) {
+            moves[count++] = move;
+        }
+    }
+
+    void clear() {
+        count = 0;
+    }
+
+    int size() const {
+        return count;
+    }
+
+    Move operator[](int index) const {
+        return moves[index];
+    }
+
+    Move &operator[](int index) {
+        return moves[index];
+    }
+};
