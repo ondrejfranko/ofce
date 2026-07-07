@@ -31,21 +31,16 @@ Bitboard get_bishop_mask(Square sq) {
     int file = sq % 8;
     int rank = sq / 8;
 
-    for (auto dir : {NORTH_EAST, NORTH_WEST, SOUTH_EAST, SOUTH_WEST}) {
-        int f = file + dir % 8;
-        int r = rank + dir / 8;
+    for (auto [df, dr] : {std::pair{-1, 1}, {1, 1}, {-1, -1}, {1, -1}}) {
+        for (int f = file + df, r = rank + dr; FILE_A <= f && f < FILE_COUNT && RANK_1 <= r && r < RANK_COUNT; f += df, r += dr) {
+            int next_f = f + df;
+            int next_r = r + dr;
 
-        while (FILE_A <= f && f < FILE_COUNT && RANK_1 <= r && r < RANK_COUNT) {
-            int next_f = f + dir % 8;
-            int next_r = r + dir / 8;
-
-            if (FILE_A <= next_f || next_f < FILE_COUNT || RANK_1 <= next_r || next_r < RANK_COUNT) {
+            if (next_f < FILE_A || next_f >= FILE_COUNT || next_r < RANK_1 || next_r >= RANK_COUNT) {
                 break;
             }
 
             mask |= bit(static_cast<Square>(r * 8 + f));
-            f = next_f;
-            r = next_r;
         }
     }
     return mask;
@@ -57,21 +52,16 @@ Bitboard get_rook_mask(Square sq) {
     int file = sq % 8;
     int rank = sq / 8;
 
-    for (auto dir : {NORTH, SOUTH, WEST, EAST}) {
-        int f = file + dir % 8;
-        int r = rank + dir / 8;
+    for (auto [df, dr] : {std::pair{0, 1}, {0, -1}, {-1, 0}, {1, 0}}) {
+        for (int f = file + df, r = rank + dr; FILE_A <= f && f < FILE_COUNT && RANK_1 <= r && r < RANK_COUNT; f += df, r += dr) {
+            int next_f = f + df;
+            int next_r = r + dr;
 
-        while (FILE_A <= f && f < FILE_COUNT && RANK_1 <= r && r < RANK_COUNT) {
-            int next_f = f + dir % 8;
-            int next_r = r + dir / 8;
-
-            if (FILE_A <= next_f || next_f < FILE_COUNT || RANK_1 <= next_r || next_r < RANK_COUNT) {
+            if (next_f < FILE_A || next_f >= FILE_COUNT || next_r < RANK_1 || next_r >= RANK_COUNT) {
                 break;
             }
 
             mask |= bit(static_cast<Square>(r * 8 + f));
-            f = next_f;
-            r = next_r;
         }
     }
     return mask;
