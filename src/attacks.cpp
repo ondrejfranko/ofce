@@ -72,19 +72,13 @@ static Bitboard compute_bishop_attacks(Square sq, Bitboard occupancy) {
     int file = sq % 8;
     int rank = sq / 8;
 
-    for (auto dir : {NORTH_WEST, NORTH_EAST, SOUTH_WEST, SOUTH_EAST}) {
-        int f = file + dir % 8;
-        int r = rank + dir / 8;
-
-        while (FILE_A <= f && f < FILE_COUNT && RANK_1 <= r && r < RANK_COUNT) {
+    for (auto [df, dr] : {std::pair{-1, 1}, {1, 1}, {-1, -1}, {1, -1}}) {
+        for (int f = file + df, r = rank + dr; FILE_A <= f && f < FILE_COUNT && RANK_1 <= r && r < RANK_COUNT; f += df, r += dr) {
             attacks |= bit(static_cast<Square>(r * 8 + f));
 
             if (occupancy & bit(static_cast<Square>(r * 8 + f))) {
                 break;
             }
-
-            f += dir % 8;
-            r += dir / 8;
         }
     }
     return attacks;
@@ -95,19 +89,13 @@ static Bitboard compute_rook_attacks(Square sq, Bitboard occupancy) {
     int file = sq % 8;
     int rank = sq / 8;
 
-    for (auto dir : {NORTH, SOUTH, WEST, EAST}) {
-        int f = file + dir % 8;
-        int r = rank + dir / 8;
-
-        while (FILE_A <= f && f < FILE_COUNT && RANK_1 <= r && r < RANK_COUNT) {
+    for (auto [df, dr] : {std::pair{0, 1}, {0, -1}, {-1, 0}, {1, 0}}) {
+        for (int f = file + df, r = rank + dr; FILE_A <= f && f < FILE_COUNT && RANK_1 <= r && r < RANK_COUNT; f += df, r += dr) {
             attacks |= bit(static_cast<Square>(r * 8 + f));
 
             if (occupancy & bit(static_cast<Square>(r * 8 + f))) {
                 break;
             }
-
-            f += dir % 8;
-            r += dir / 8;
         }
     }
     return attacks;
