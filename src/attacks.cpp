@@ -110,8 +110,8 @@ static void build_bishop_attacks(Square sq) {
     for (int i = 0; i < occupancy_variations; ++i) {
         // Use PDEP to create the occupancy bitboard for the current variation
         Bitboard occupancy = _pdep_u64(static_cast<uint64_t>(i), mask);
-        // Use PEXT to get the index for the attack table
-        BISHOP_ATTACKS_BB[sq][_pext_u64(occupancy, mask)] = compute_bishop_attacks(sq, occupancy);
+        // Use the index for the attack table directly
+        BISHOP_ATTACKS_BB[sq][i] = compute_bishop_attacks(sq, occupancy);
     }
 }
 
@@ -124,8 +124,8 @@ static void build_rook_attacks(Square sq) {
     for (int i = 0; i < occupancy_variations; ++i) {
         // Use PDEP to create the occupancy bitboard for the current variation
         Bitboard occupancy = _pdep_u64(static_cast<uint64_t>(i), mask);
-        // Use PEXT to get the index for the attack table
-        ROOK_ATTACKS_BB[sq][_pext_u64(occupancy, mask)] = compute_rook_attacks(sq, occupancy);
+        // Use the index for the attack table directly
+        ROOK_ATTACKS_BB[sq][i] = compute_rook_attacks(sq, occupancy);
     }
 }
 
