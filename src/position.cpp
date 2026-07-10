@@ -79,19 +79,19 @@ void clear_square(Position &pos, Square square) {
 
     Piece p = pos.squares[square];
 
-    // Clear bitboards
-    if (p != PIECE_NONE) {
-        clear_bit(pos.piece_BB[p], square);
-        clear_bit(pos.color_BB[piece_color(p)], square);
+    if (p == PIECE_NONE) {
+        return;
     }
+
+    // Clear bitboards
+    clear_bit(pos.piece_BB[p], square);
+    clear_bit(pos.color_BB[piece_color(p)], square);
 
     // Clear mailbox square
     pos.squares[square] = PIECE_NONE;
 
     // Update zobrist key
-    if (p != PIECE_NONE) {
-        pos.zobrist_key ^= ZOBRIST_PSQ[p][square];
-    }
+    pos.zobrist_key ^= ZOBRIST_PSQ[p][square];
 }
 
 void set_square(Position &pos, Square square, Piece piece) {
