@@ -73,7 +73,7 @@ constexpr Square pop_msb(Bitboard &bb) {
     assert(bb != 0);
 
     Square sq = get_msb(bb);
-    clear_bit(bb, sq);
+    bb ^= 1ULL << sq;
     return sq;
 }
 
