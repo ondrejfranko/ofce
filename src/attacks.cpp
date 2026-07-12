@@ -199,14 +199,12 @@ void init_attacks() {
     // Sliding masks and attacks
     for (int sq = A1; sq < SQUARE_COUNT; ++sq) {
         // Bishop mask
-        BISHOP_MASKS_BB[sq] = 0;
-        BISHOP_MASKS_BB[sq] |= get_bishop_mask(static_cast<Square>(sq));
+        BISHOP_MASKS_BB[sq] = get_bishop_mask(static_cast<Square>(sq));
         // Build bishop attacks for all occupancy variations
         build_bishop_attacks(static_cast<Square>(sq));
 
         // Rook mask
-        ROOK_MASKS_BB[sq] = 0;
-        ROOK_MASKS_BB[sq] |= get_rook_mask(static_cast<Square>(sq));
+        ROOK_MASKS_BB[sq] = get_rook_mask(static_cast<Square>(sq));
         // Build rook attacks for all occupancy variations
         build_rook_attacks(static_cast<Square>(sq));
     }
