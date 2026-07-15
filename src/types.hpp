@@ -74,3 +74,16 @@ enum Direction : int8_t {
     SOUTH_WEST = -9,
     SOUTH_EAST = -7
 };
+
+// Piece helpers
+inline constexpr Piece make_piece(PieceType pt, Color c) {
+    return static_cast<Piece>(pt + c * 6);
+}
+
+inline constexpr PieceType get_piece_type(Piece pc) {
+    return static_cast<PieceType>(pc == PIECE_NONE ? PIECE_TYPE_NONE : ((pc - 1) % 6) + 1);
+}
+
+inline constexpr Color get_piece_color(Piece pc) {
+    return static_cast<Color>((pc - 1) / 6);
+}
