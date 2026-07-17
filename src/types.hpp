@@ -75,6 +75,15 @@ enum Direction : int8_t {
     SOUTH_EAST = -7
 };
 
+// Color helpers
+inline constexpr Color operator~(Color c) {
+    return static_cast<Color>(c ^ 1);
+}
+
+inline constexpr Color& operator++(Color& c) {
+    return c = static_cast<Color>(c + 1);
+}
+
 // Piece helpers
 inline constexpr Piece make_piece(PieceType pt, Color c) {
     return static_cast<Piece>(pt + c * 6);
