@@ -153,3 +153,16 @@ void generate_pawn_moves(const Position &pos, MoveList &list, Bitboard target) {
         }
     }
 }
+
+// Knight move generation
+template <Color C>
+void generate_knight_moves(const Position &pos, MoveList &list, Bitboard target) {
+    constexpr Piece KNIGHT_PIECE = make_piece(KNIGHT, C);
+    Bitboard pieces = pos.piece_BB[KNIGHT_PIECE];
+    while (pieces) {
+        const Square from = pop_lsb(pieces);
+        Bitboard attacks = get_knight_attacks(from) & target;
+        while (attacks)
+            list.add_move(Move(from, pop_lsb(attacks)));
+    }
+}
