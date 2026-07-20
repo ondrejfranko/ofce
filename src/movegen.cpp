@@ -166,3 +166,13 @@ void generate_knight_moves(const Position &pos, MoveList &list, Bitboard target)
             list.add_move(Move(from, pop_lsb(attacks)));
     }
 }
+
+// King move generation
+template <Color C>
+void generate_king_moves(const Position &pos, MoveList &list, Bitboard target) {
+    constexpr Piece KING_PIECE = make_piece(KING, C);
+    const Square ksq = get_lsb(pos.piece_BB[KING_PIECE]);
+    Bitboard attacks = get_king_attacks(ksq) & target;
+    while (attacks)
+        list.add_move(Move(ksq, pop_lsb(attacks)));
+}
