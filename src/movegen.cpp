@@ -167,6 +167,21 @@ void generate_knight_moves(const Position &pos, MoveList &list, Bitboard target)
     }
 }
 
+// Bishop move generation
+template <Color C>
+void generate_bishop_moves(const Position &pos, MoveList &list, Bitboard target) {
+    constexpr Piece BISHOP_PIECE = make_piece(BISHOP, C);
+    constexpr Piece QUEEN_PIECE = make_piece(QUEEN, C);
+    const Bitboard occ = pos.color_BB[WHITE] | pos.color_BB[BLACK];
+    Bitboard pieces = pos.piece_BB[BISHOP_PIECE] | pos.piece_BB[QUEEN_PIECE];
+    while (pieces) {
+        const Square from = pop_lsb(pieces);
+        Bitboard attacks = get_bishop_attacks(from, occ) & target;
+        while (attacks)
+            list.add_move(Move(from, pop_lsb(attacks)));
+    }
+}
+
 // King move generation
 template <Color C>
 void generate_king_moves(const Position &pos, MoveList &list, Bitboard target) {
