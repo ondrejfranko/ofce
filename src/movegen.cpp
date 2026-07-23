@@ -31,7 +31,6 @@ void generate_moves(const Position &pos, MoveList &list, GenType gen_type) {
         generate_knight_moves<WHITE>(pos, list, target);
         generate_bishop_moves<WHITE>(pos, list, target);
         generate_rook_moves<WHITE>(pos, list, target);
-        generate_queen_moves<WHITE>(pos, list, target);
         generate_king_moves<WHITE>(pos, list, target);
         if (gen_type != GenType::CAPTURES)
             generate_castling_moves<WHITE>(pos, list);
@@ -40,7 +39,6 @@ void generate_moves(const Position &pos, MoveList &list, GenType gen_type) {
         generate_knight_moves<BLACK>(pos, list, target);
         generate_bishop_moves<BLACK>(pos, list, target);
         generate_rook_moves<BLACK>(pos, list, target);
-        generate_queen_moves<BLACK>(pos, list, target);
         generate_king_moves<BLACK>(pos, list, target);
         if (gen_type != GenType::CAPTURES)
             generate_castling_moves<BLACK>(pos, list);
@@ -167,7 +165,7 @@ void generate_knight_moves(const Position &pos, MoveList &list, Bitboard target)
     }
 }
 
-// Bishop move generation
+// Bishop (+ diagonal queen) move generation
 template <Color C>
 void generate_bishop_moves(const Position &pos, MoveList &list, Bitboard target) {
     constexpr Piece BISHOP_PIECE = make_piece(BISHOP, C);
