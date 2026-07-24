@@ -204,3 +204,28 @@ void generate_king_moves(const Position &pos, MoveList &list, Bitboard target) {
     while (attacks)
         list.add_move(Move(ksq, pop_lsb(attacks)));
 }
+
+// Check if square is attacked by a piece of colour C
+template <Color C>
+bool is_square_attacked(const Position &pos, Square sq) {
+    constexpr Color THEM = ~C;
+    const Bitboard occ = pos.color_BB[WHITE] | pos.color_BB[BLACK];
+
+    // non-sliding: (use other color's pawn table to locate C's pawns)
+    if (get_pawn_attacks(THEM, sq) & pos.piece_BB[make_piece(PAWN, C)])
+        return true;
+    if (get_knight_attacks(sq) & pos.piece_BB[make_piece(KNIGHT, C)])
+        return true;
+    if (get_king_attacks(sq) & pos.piece_BB[make_piece(KING, C)])
+        return true;
+
+    // sliding (diagonal)
+    if (get_bishop_attacks(sq, occ) & (pos.piece_BB[make_piece(BISHOP, C)] | pos.piece_BB[make_piece(QUEEN, C)]))
+        return true;
+
+    // sliding (orthogonal)
+    if (get_rook_attacks(sq, occ) & (pos.piece_BB[make_piece(ROOK, C)] | pos.piece_BB[make_piece(QUEEN, C)]))
+        return true;
+
+    return false;
+}
