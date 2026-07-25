@@ -205,6 +205,38 @@ void generate_king_moves(const Position &pos, MoveList &list, Bitboard target) {
         list.add_move(Move(ksq, pop_lsb(attacks)));
 }
 
+// Castling move generation
+template <Color C>
+void generate_castling_moves(const Position &pos, MoveList &list) {
+    constexpr Color THEM = ~C;
+
+    if constexpr (C == WHITE) {
+        // kingside
+        if ((pos.castling_rights & CR_WHITE_KINGSIDE) && pos.squares[F1] == PIECE_NONE && pos.squares[G1] == PIECE_NONE &&
+            !is_square_attacked<THEM>(pos, E1) && !is_square_attacked<THEM>(pos, F1) && !is_square_attacked<THEM>(pos, G1)) {
+            list.add_move(Move(E1, G1, CASTLING_MOVE));
+        }
+        // queenside
+        if ((pos.castling_rights & CR_WHITE_QUEENSIDE) && pos.squares[D1] == PIECE_NONE && pos.squares[C1] == PIECE_NONE &&
+            pos.squares[B1] == PIECE_NONE && !is_square_attacked<THEM>(pos, E1) && !is_square_attacked<THEM>(pos, D1) &&
+            !is_square_attacked<THEM>(pos, C1)) {
+            list.add_move(Move(E1, C1, CASTLING_MOVE));
+        }
+    } else {
+        // kingside
+        if ((pos.castling_rights & CR_BLACK_KINGSIDE) && pos.squares[F8] == PIECE_NONE && pos.squares[G8] == PIECE_NONE &&
+            !is_square_attacked<THEM>(pos, E8) && !is_square_attacked<THEM>(pos, F8) && !is_square_attacked<THEM>(pos, G8)) {
+            list.add_move(Move(E8, G8, CASTLING_MOVE));
+        }
+        // queenside
+        if ((pos.castling_rights & CR_BLACK_QUEENSIDE) && pos.squares[D8] == PIECE_NONE && pos.squares[C8] == PIECE_NONE &&
+            pos.squares[B8] == PIECE_NONE && !is_square_attacked<THEM>(pos, E8) && !is_square_attacked<THEM>(pos, D8) &&
+            !is_square_attacked<THEM>(pos, C8)) {
+            list.add_move(Move(E8, C8, CASTLING_MOVE));
+        }
+    }
+}
+
 // Check if square is attacked by a piece of colour C
 template <Color C>
 bool is_square_attacked(const Position &pos, Square sq) {
