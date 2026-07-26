@@ -237,6 +237,18 @@ void generate_castling_moves(const Position &pos, MoveList &list) {
     }
 }
 
+// Bitboard of enemy pieces checking the king
+Bitboard checkers_to(const Position &pos, Color king_color) {
+    const Color them = ~king_color;
+    const Square ksq = get_lsb(pos.piece_BB[make_piece(KING, king_color)]);
+    const Bitboard occ = pos.color_BB[WHITE] | pos.color_BB[BLACK];
+
+    return (get_pawn_attacks(king_color, ksq) & pos.piece_BB[make_piece(PAWN, them)]) |
+           (get_knight_attacks(ksq) & pos.piece_BB[make_piece(KNIGHT, them)]) |
+           (get_bishop_attacks(ksq, occ) & (pos.piece_BB[make_piece(BISHOP, them)] | pos.piece_BB[make_piece(QUEEN, them)])) |
+           (get_rook_attacks(ksq, occ) & (pos.piece_BB[make_piece(ROOK, them)] | pos.piece_BB[make_piece(QUEEN, them)]));
+}
+
 // Check if square is attacked by a piece of colour C
 template <Color C>
 bool is_square_attacked(const Position &pos, Square sq) {
