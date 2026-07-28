@@ -237,6 +237,54 @@ void generate_castling_moves(const Position &pos, MoveList &list) {
     }
 }
 
+// Bitboard of all squares attacked by the given color
+template <Color C>
+Bitboard attacks_by(const Position &pos) {
+    constexpr Piece PAWN_PIECE = make_piece(PAWN, C);
+    constexpr Piece KNIGHT_PIECE = make_piece(KNIGHT, C);
+    constexpr Piece BISHOP_PIECE = make_piece(BISHOP, C);
+    constexpr Piece ROOK_PIECE = make_piece(ROOK, C);
+    constexpr Piece QUEEN_PIECE = make_piece(QUEEN, C);
+    constexpr Piece KING_PIECE = make_piece(KING, C);
+    const Bitboard occ = pos.color_BB[WHITE] | pos.color_BB[BLACK];
+    Bitboard attacks = 0;
+
+    // pawns
+    {
+        Bitboard bb = pos.piece_BB[PAWN_PIECE];
+        if constexpr (C == WHITE)
+            attacks |= shift_NW(bb) | shift_NE(bb);
+        else
+            attacks |= shift_SW(bb) | shift_SE(bb);
+    }
+
+    // knights
+    {
+        Bitboard bb = pos.piece_BB[KNIGHT_PIECE];
+        while (bb)
+            attacks |= get_knight_attacks(pop_lsb(bb));
+    }
+
+    // bishops + queens (diagonal)
+    {
+        Bitboard bb = pos.piece_BB[BISHOP_PIECE] | pos.piece_BB[QUEEN_PIECE];
+        while (bb)
+            attacks |= get_bishop_attacks(pop_lsb(bb), occ);
+    }
+
+    // rooks + queens (orthogonal)
+    {
+        Bitboard bb = pos.piece_BB[ROOK_PIECE] | pos.piece_BB[QUEEN_PIECE];
+        while (bb)
+            attacks |= get_rook_attacks(pop_lsb(bb), occ);
+    }
+
+    // king
+    attacks |= get_king_attacks(get_lsb(pos.piece_BB[KING_PIECE]));
+
+    return attacks;
+}
+
 // Bitboard of enemy pieces checking the king
 Bitboard checkers_to(const Position &pos, Color king_color) {
     const Color them = ~king_color;
