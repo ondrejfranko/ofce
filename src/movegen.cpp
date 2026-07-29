@@ -321,3 +321,41 @@ bool is_square_attacked(const Position &pos, Square sq) {
 
     return false;
 }
+
+// Bitboard of pinned pieces of specified color
+Bitboard pinned_pieces(const Position &pos, Color color) {
+    const Color them = ~color;
+    const Square ksq = get_lsb(pos.piece_BB[make_piece(KING, color)]);
+    const Bitboard occ = pos.color_BB[WHITE] | pos.color_BB[BLACK];
+    const Bitboard us_bb = pos.color_BB[color];
+    const Bitboard them_bb = pos.color_BB[them];
+
+    // occupancy with our pieces removed reveals x-ray attackers
+    const Bitboard xray_occ = occ & ~us_bb;
+    Bitboard pinned = 0;
+
+    // diagonal x-ray attackers (bishops and queens)
+    {
+        Bitboard snipers = get_bishop_attacks(ksq, xray_occ) & (pos.piece_BB[make_piece(BISHOP, them)] | pos.piece_BB[make_piece(QUEEN, them)]);
+        while (snipers) {
+            const Square sq = pop_lsb(snipers);
+            const Bitboard between = BETWEEN_BB[ksq][sq] & occ;
+            // exactly one friendly piece and no enemy pieces between king and x-ray attacker
+            if (popcount(between & us_bb) == 1 && (between & them_bb) == 0)
+                pinned |= (between & us_bb);
+        }
+    }
+
+    // orthogonal x-ray attackers (rooks and queens)
+    {
+        Bitboard snipers = get_rook_attacks(ksq, xray_occ) & (pos.piece_BB[make_piece(ROOK, them)] | pos.piece_BB[make_piece(QUEEN, them)]);
+        while (snipers) {
+            const Square sq = pop_lsb(snipers);
+            const Bitboard between = BETWEEN_BB[ksq][sq] & occ;
+            if (popcount(between & us_bb) == 1 && (between & them_bb) == 0)
+                pinned |= (between & us_bb);
+        }
+    }
+
+    return pinned;
+}
