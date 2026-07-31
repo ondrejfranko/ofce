@@ -60,8 +60,8 @@ void generate_pawn_moves(const Position &pos, MoveList &list, Bitboard target) {
     if constexpr (C == WHITE) {
         push_1_BB = shift_N(pawns) & empty;
         push_2_BB = shift_N(shift_N(pawns & RANK_BB[RANK_2]) & empty) & empty;
-        cap_left_BB = shift_NW(pawns) & enemy;
-        cap_right_BB = shift_NE(pawns) & enemy;
+        cap_left_BB = shift_NW(pawns) & (enemy | (pos.en_passant_square == SQUARE_NONE ? 0ULL : bit(pos.en_passant_square)));
+        cap_right_BB = shift_NE(pawns) & (enemy | (pos.en_passant_square == SQUARE_NONE ? 0ULL : bit(pos.en_passant_square)));
         promo_rank = RANK_BB[RANK_8];
         double_rank = RANK_BB[RANK_4];
         push_dir = NORTH;
@@ -70,8 +70,8 @@ void generate_pawn_moves(const Position &pos, MoveList &list, Bitboard target) {
     } else {
         push_1_BB = shift_S(pawns) & empty;
         push_2_BB = shift_S(shift_S(pawns & RANK_BB[RANK_7]) & empty) & empty;
-        cap_left_BB = shift_SW(pawns) & enemy;
-        cap_right_BB = shift_SE(pawns) & enemy;
+        cap_left_BB = shift_SW(pawns) & (enemy | (pos.en_passant_square == SQUARE_NONE ? 0ULL : bit(pos.en_passant_square)));
+        cap_right_BB = shift_SE(pawns) & (enemy | (pos.en_passant_square == SQUARE_NONE ? 0ULL : bit(pos.en_passant_square)));
         promo_rank = RANK_BB[RANK_1];
         double_rank = RANK_BB[RANK_5];
         push_dir = SOUTH;
