@@ -360,3 +360,23 @@ Bitboard pinned_pieces(const Position &pos, Color color) {
 
     return pinned;
 }
+
+// Explicit template instantiations
+template void generate_pawn_moves<WHITE>(const Position &, MoveList &, Bitboard);
+template void generate_pawn_moves<BLACK>(const Position &, MoveList &, Bitboard);
+template void generate_knight_moves<WHITE>(const Position &, MoveList &, Bitboard);
+template void generate_knight_moves<BLACK>(const Position &, MoveList &, Bitboard);
+template void generate_bishop_moves<WHITE>(const Position &, MoveList &, Bitboard);
+template void generate_bishop_moves<BLACK>(const Position &, MoveList &, Bitboard);
+template void generate_rook_moves<WHITE>(const Position &, MoveList &, Bitboard);
+template void generate_rook_moves<BLACK>(const Position &, MoveList &, Bitboard);
+template void generate_king_moves<WHITE>(const Position &, MoveList &, Bitboard);
+template void generate_king_moves<BLACK>(const Position &, MoveList &, Bitboard);
+template void generate_castling_moves<WHITE>(const Position &, MoveList &);
+template void generate_castling_moves<BLACK>(const Position &, MoveList &);
+
+template Bitboard attacks_by<WHITE>(const Position &);
+template Bitboard attacks_by<BLACK>(const Position &);
+
+template bool is_square_attacked<WHITE>(const Position &, Square);
+template bool is_square_attacked<BLACK>(const Position &, Square);
