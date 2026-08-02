@@ -75,6 +75,44 @@ enum Direction : int8_t {
     SOUTH_EAST = -7
 };
 
+// Square/File/Rank helpers
+inline constexpr Square make_square(File f, Rank r) {
+    return static_cast<Square>(r * 8 + f);
+}
+
+inline constexpr File get_file(Square sq) {
+    return static_cast<File>(sq & 7);
+}
+
+inline constexpr Rank get_rank(Square sq) {
+    return static_cast<Rank>(sq >> 3);
+}
+
+inline constexpr File& operator++(File& f) {
+    return f = static_cast<File>(f + 1);
+}
+
+inline constexpr Rank& operator++(Rank& r) {
+    return r = static_cast<Rank>(r + 1);
+}
+
+// Square direction helpers
+inline constexpr Square operator+(Square sq, Direction d) {
+    return static_cast<Square>(static_cast<int>(sq) + static_cast<int>(d));
+}
+
+inline constexpr Square operator-(Square sq, Direction d) {
+    return static_cast<Square>(static_cast<int>(sq) - static_cast<int>(d));
+}
+
+inline constexpr Square& operator+=(Square& sq, Direction d) {
+    return sq = static_cast<Square>(static_cast<int>(sq) + static_cast<int>(d));
+}
+
+inline constexpr Square& operator-=(Square& sq, Direction d) {
+    return sq = static_cast<Square>(static_cast<int>(sq) - static_cast<int>(d));
+}
+
 // Color helpers
 inline constexpr Color operator~(Color c) {
     return static_cast<Color>(c ^ 1);
