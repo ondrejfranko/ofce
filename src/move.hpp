@@ -1,6 +1,7 @@
 #pragma once
 
 #include "types.hpp"
+#include <cassert>
 #include <cstdint>
 #include <string>
 
@@ -21,10 +22,12 @@ class Move {
   public:
     // Constructors
     constexpr Move() : data(0) {}
-    constexpr Move(uint16_t d) : data(d) {}
+    explicit constexpr Move(uint16_t d) : data(d) {}
     constexpr Move(Square from, Square to, MoveTypeFlag flag = NORMAL_MOVE) : data((from & 0x3F) | ((to & 0x3F) << 6) | flag) {}
     constexpr Move(Square from, Square to, PieceType promo_piece_type)
-        : data((from & 0x3F) | ((to & 0x3F) << 6) | (((promo_piece_type - KNIGHT) & 0x3) << 12) | PROMO_MOVE) {}
+        : data((from & 0x3F) | ((to & 0x3F) << 6) | (((promo_piece_type - KNIGHT) & 0x3) << 12) | PROMO_MOVE) {
+        assert(KNIGHT <= promo_piece_type && promo_piece_type <= QUEEN);
+    }
 
     // Getters
     constexpr Square from() const {
@@ -82,9 +85,8 @@ struct MoveList {
     int count = 0;
 
     void add_move(const Move &move) {
-        if (count < MAX_POS_MOVES) {
-            moves[count++] = move;
-        }
+        assert(count < MAX_POS_MOVES);
+        moves[count++] = move;
     }
 
     void clear() {
@@ -96,10 +98,12 @@ struct MoveList {
     }
 
     Move operator[](int index) const {
+        assert(0 <= index && index < count);
         return moves[index];
     }
 
     Move &operator[](int index) {
+        assert(0 <= index && index < count);
         return moves[index];
     }
 };
