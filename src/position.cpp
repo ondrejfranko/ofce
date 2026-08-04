@@ -147,6 +147,7 @@ void set_position(Position &pos, std::string_view fen) {
 
     // 2. Parse side to move
     if (i < fen.length()) {
+        assert(fen[i] == 'w' || fen[i] == 'b');
         pos.side_to_move = (fen[i] == 'w') ? WHITE : BLACK;
         ++i;
 
@@ -185,12 +186,12 @@ void set_position(Position &pos, std::string_view fen) {
     if (i + 1 < fen.length() && fen[i] != '-') {
         char file = fen[i];
         char rank = fen[i + 1];
-        if (file >= 'a' && file <= 'h' && rank >= '1' && rank <= '8') {
-            pos.en_passant_square = static_cast<Square>((rank - '1') * 8 + (file - 'a'));
 
-            // Update en passant zobrist key
-            pos.zobrist_key ^= ZOBRIST_EP[file - 'a'];
-        }
+        assert('a' <= file && file <= 'h' && '1' <= rank && rank <= '8');
+        pos.en_passant_square = static_cast<Square>((rank - '1') * 8 + (file - 'a'));
+
+        // Update en passant zobrist key
+        pos.zobrist_key ^= ZOBRIST_EP[file - 'a'];
         i += 2;
     } else {
         pos.en_passant_square = SQUARE_NONE;
@@ -218,8 +219,8 @@ void set_position(Position &pos, std::string_view fen) {
     int fullmove = 1;
     if (i < fen.length()) {
         std::from_chars(fen.data() + i, fen.data() + fen.length(), fullmove);
-        pos.game_ply = (fullmove - 1) * 2 + (pos.side_to_move == BLACK ? 1 : 0);
     }
+    pos.game_ply = (fullmove - 1) * 2 + (pos.side_to_move == BLACK ? 1 : 0);
 }
 
 void print_position(const Position &pos) {
