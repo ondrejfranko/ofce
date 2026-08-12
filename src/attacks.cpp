@@ -4,6 +4,7 @@
 #include <array>
 #include <bit>
 #include <cassert>
+#include <cstdlib>
 #include <immintrin.h>
 
 // Relevant potential blocker occupancy bitboards for sliding pieces
@@ -212,13 +213,6 @@ void init_attacks() {
     // Between and line bitboards
     for (int sq1 = A1; sq1 < SQUARE_COUNT; ++sq1) {
         for (int sq2 = A1; sq2 < SQUARE_COUNT; ++sq2) {
-            BETWEEN_BB[sq1][sq2] = 0;
-            LINE_BB[sq1][sq2] = 0;
-        }
-    }
-
-    for (int sq1 = A1; sq1 < SQUARE_COUNT; ++sq1) {
-        for (int sq2 = A1; sq2 < SQUARE_COUNT; ++sq2) {
             if (sq1 == sq2) {
                 continue;
             }
@@ -242,6 +236,8 @@ void init_attacks() {
                     f += file_step;
                     r += rank_step;
                 }
+                // Add both endpoints to LINE_BB
+                LINE_BB[sq1][sq2] |= bit(static_cast<Square>(sq1));
                 LINE_BB[sq1][sq2] |= bit(static_cast<Square>(rank2 * 8 + file2));
             }
         }
