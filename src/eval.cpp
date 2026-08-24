@@ -1,4 +1,5 @@
 #include "eval.hpp"
+#include "bitboard.hpp"
 #include "types.hpp"
 
 // Piece-square tables (including base piece values)
@@ -186,6 +187,16 @@ void init_eval() {
     return;
 }
 
+// Calculate phase based on non-pawn material
+int game_phase(const Position &pos) {
+    int p = 0;
+    p += popcount(pos.piece_BB[WHITE_KNIGHT] | pos.piece_BB[BLACK_KNIGHT]) * PHASE_WEIGHT[KNIGHT];
+    p += popcount(pos.piece_BB[WHITE_BISHOP] | pos.piece_BB[BLACK_BISHOP]) * PHASE_WEIGHT[BISHOP];
+    p += popcount(pos.piece_BB[WHITE_ROOK] | pos.piece_BB[BLACK_ROOK]) * PHASE_WEIGHT[ROOK];
+    p += popcount(pos.piece_BB[WHITE_QUEEN] | pos.piece_BB[BLACK_QUEEN]) * PHASE_WEIGHT[QUEEN];
+    return p;
+}
+
 template <Color C>
 ScorePair evaluate_psqt(const EvalInfo &info) {
     ScorePair v = S(0, 0);
@@ -209,8 +220,7 @@ int evaluate(const Position &pos) {
     // compute evaluation terms and combine them into a final score
     ScorePair sp = evaluate_psqt<WHITE>(info) - evaluate_psqt<BLACK>(info);
 
-    // TODO: calculate phase
-    int eval = interpolate(sp, 12);
+    int eval = interpolate(sp, game_phase(pos));
 
     return eval;
 }
