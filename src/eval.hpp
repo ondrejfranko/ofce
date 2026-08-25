@@ -47,28 +47,6 @@ constexpr int interpolate(ScorePair s, int phase) {
 // Piece-square tables (including base piece values)
 extern ScorePair PSQT[PIECE_COUNT][SQUARE_COUNT];
 
-// Pawn configuration cache entry
-struct PawnEntry {
-    Key key;         // key (from zobrist pawn hashes)
-    ScorePair score; // pawn structure score (white's perspective)
-    // TODO: add pawn structure features
-};
-
-// Pawn hash table
-struct PawnTable {
-    static constexpr std::size_t SIZE = 1 << 15; // number of entries (32768)
-    std::array<PawnEntry, SIZE> entries{};       // entries
-
-    // Get entry for pawn configuration of the position
-    const PawnEntry *probe(const Position &pos);
-
-    // Clear the table
-    void clear();
-};
-
-// Global pawn hash table
-extern PawnTable PAWN_TABLE;
-
 // Startup initialisation of evaluation
 void init_eval();
 

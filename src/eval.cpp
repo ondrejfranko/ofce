@@ -5,9 +5,6 @@
 // Piece-square tables (including base piece values)
 ScorePair PSQT[PIECE_COUNT][SQUARE_COUNT]{};
 
-// Global pawn structure hash table
-PawnTable PAWN_TABLE;
-
 // clang-format off
 // Piece type material values
 inline constexpr std::array<ScorePair, PIECE_TYPE_COUNT> PIECE_VALUE = {
@@ -161,12 +158,11 @@ constexpr std::array<std::array<int16_t, 64>, PIECE_TYPE_COUNT> PSQT_EG = [] {
 // Struct holding all information needed for evaluation
 struct EvalInfo {
     const Position &pos;
-    const PawnEntry *pe;
     // TODO: add more fields that would otherwise be recomputed multiple times
 };
 
-EvalInfo make_eval_info(const Position &pos, const PawnEntry &pe) {
-    EvalInfo info{pos, &pe};
+EvalInfo make_eval_info(const Position &pos) {
+    EvalInfo info{pos};
 
     // TODO: compute and fill in the rest of the fields
 
@@ -214,8 +210,7 @@ ScorePair evaluate_psqt(const EvalInfo &info) {
 
 // Static evaluation from POV of the side to move
 int evaluate(const Position &pos) {
-    const PawnEntry *pe = 0; // TODO: implement pawn table probing
-    const EvalInfo info = make_eval_info(pos, *pe);
+    const EvalInfo info = make_eval_info(pos);
 
     // compute evaluation terms and combine them into a final score
     ScorePair sp = evaluate_psqt<WHITE>(info) - evaluate_psqt<BLACK>(info);
