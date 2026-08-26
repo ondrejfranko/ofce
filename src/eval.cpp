@@ -217,5 +217,5 @@ int evaluate(const Position &pos) {
 
     int eval = interpolate(sp, game_phase(pos));
 
-    return eval;
+    return pos.side_to_move == WHITE ? eval : -eval;
 }
