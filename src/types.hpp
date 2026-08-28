@@ -4,9 +4,33 @@
 
 using Bitboard = uint64_t;
 using Key = uint64_t;
+using Score = int; // TODO: possibly change to int16_t to fit into a TT entry
 
 inline constexpr int MAX_POS_MOVES = 256;
 inline constexpr int MAX_PLY_DEPTH = 256;
+
+inline constexpr Score SCORE_DRAW = 0; // draw score
+inline constexpr Score SCORE_MATE_IN_MAX = 32000; // mate score at max ply depth
+inline constexpr Score SCORE_MATE = SCORE_MATE_IN_MAX + MAX_PLY_DEPTH; // mate at this node (32256)
+inline constexpr Score SCORE_NONE = SCORE_MATE_IN_MAX + 1; // score not available, used for initialization (32257)
+
+// Check if a score is a mate score
+constexpr bool is_mate_score(Score s) {
+    Score a = s < 0 ? -s : s;
+    return a >= SCORE_MATE_IN_MAX;
+}
+// Get the score of mate in ply plies
+constexpr Score mate_in(int ply) {
+    return SCORE_MATE - ply;
+}
+// Get the score of mated in ply plies
+constexpr Score mated_in(int ply) {
+    return ply - SCORE_MATE;
+}
+// Get the ply distance to mate from a mate score
+constexpr int mate_ply(Score s) {
+    return s > 0 ? SCORE_MATE - s : SCORE_MATE + s;
+}
 
 // clang-format off
 enum Square : int8_t {
